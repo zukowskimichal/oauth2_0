@@ -15,16 +15,23 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.server.authorization.InMemoryOAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
@@ -32,6 +39,7 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
+import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
@@ -41,28 +49,61 @@ import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 @EnableWebSecurity
 public class SecurityConfig {
 
+
     @Bean
-    @Order(1)
-    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http)
-        throws Exception {
-        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-        http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-            .oidc(Customizer.withDefaults());	// Enable OpenID Connect 1.0
-        http
-            // Redirect to the login page when not authenticated from the
-            // authorization endpoint
-            .exceptionHandling((exceptions) -> exceptions
-                .defaultAuthenticationEntryPointFor(
-                    new LoginUrlAuthenticationEntryPoint("/login"),
-                    new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
-                )
-            )
-            // Accept access tokens for User Info and/or Client Registration
-            .oauth2ResourceServer((resourceServer) -> resourceServer
-                .jwt(Customizer.withDefaults()));
+    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
+        OAuth2AuthorizationServerConfigurer authorizationServerCustomizer =
+            new OAuth2AuthorizationServerConfigurer();
+        http.with(authorizationServerCustomizer, customizer -> {
+            customizer
+                .registeredClientRepository(registeredClientRepository())
+                .authorizationService(oAuth2AuthorizationService())
+//                .authorizationConsentService(authorizationConsentService)
+                .authorizationServerSettings(authorizationServerSettings())
+//                .tokenGenerator(tokenGenerator)
+//                .clientAuthentication(clientAuthentication -> { clientAuthentication.authenticationProvider(authenticationProvider());})
+                .authorizationEndpoint(authorizationEndpoint -> { })
+                .deviceAuthorizationEndpoint(deviceAuthorizationEndpoint -> { })
+                .deviceVerificationEndpoint(deviceVerificationEndpoint -> { })
+                .tokenEndpoint(tokenEndpoint -> { })
+                .tokenIntrospectionEndpoint(tokenIntrospectionEndpoint -> { })
+                .tokenRevocationEndpoint(tokenRevocationEndpoint -> { })
+                .authorizationServerMetadataEndpoint(authorizationServerMetadataEndpoint -> { })
+                .oidc(oidc -> oidc
+                    .providerConfigurationEndpoint(providerConfigurationEndpoint -> { })
+                    .logoutEndpoint(logoutEndpoint -> { })
+                    .userInfoEndpoint(userInfoEndpoint -> { })
+                    .clientRegistrationEndpoint(clientRegistrationEndpoint -> { })
+                );
+        }).csrf(AbstractHttpConfigurer::disable);
+
+
 
         return http.build();
     }
+
+//    @Bean
+//    @Order(1)
+//    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http)
+//        throws Exception {
+//        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
+//        http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
+//            .oidc(Customizer.withDefaults());    // Enable OpenID Connect 1.0
+////        http
+////            // Redirect to the login page when not authenticated from the
+////            // authorization endpoint
+//////            .exceptionHandling((exceptions) -> exceptions
+//////                .defaultAuthenticationEntryPointFor(
+//////                    new LoginUrlAuthenticationEntryPoint("/login"),
+//////                    new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
+//////                )
+//////            )
+////            // Accept access tokens for User Info and/or Client Registration
+////            .oauth2ResourceServer((resourceServer) -> resourceServer
+////                .jwt(Customizer.withDefaults()));
+//
+//        return http.build();
+//    }
 
     @Bean
     @Order(2)
@@ -80,11 +121,16 @@ public class SecurityConfig {
     }
 
     @Bean
+    OAuth2AuthorizationService oAuth2AuthorizationService() {
+
+        return new InMemoryOAuth2AuthorizationService();
+    }
+    @Bean
     public UserDetailsService userDetailsService() {
         UserDetails userDetails = User.withDefaultPasswordEncoder()
             .username("user")
             .password("password")
-            .roles("USER","ADMIN")
+            .roles("USER", "ADMIN")
             .build();
 
         return new InMemoryUserDetailsManager(userDetails);
@@ -92,22 +138,36 @@ public class SecurityConfig {
 
     @Bean
     public RegisteredClientRepository registeredClientRepository() {
-        RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
-            .clientId("oidc-client")
-            .clientSecret("{noop}secret")
-            .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+//        RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
+//            .clientId("oidc-client")
+//            .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
+//            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+//            .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+//            .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+//            .redirectUri("http://127.0.0.1:8080/login/oauth2/code/oidc-client")
+//            .postLogoutRedirectUri("http://127.0.0.1:8080/")
+//            .scope(OidcScopes.OPENID)
+//            .scope(OidcScopes.PROFILE)
+//            .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
+//            .build();
+
+        RegisteredClient reactClient = RegisteredClient.withId(UUID.randomUUID().toString())
+            .clientId("react-client")
+            .clientSecret("{noop}")
+            .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
             .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-//            .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-            .redirectUri("http://127.0.0.1:8080/login/oauth2/code/oidc-client")
-            .postLogoutRedirectUri("http://127.0.0.1:8080/")
-            .scope(OidcScopes.OPENID)
-            .scope(OidcScopes.PROFILE)
+            .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+            .redirectUri("http://127.0.0.1:8080/login/oauth2/code/react-client")
+            .postLogoutRedirectUri("http://127.0.0.1:8080/main")
+            .scope("read")
+            .scope("write")
             .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
             .build();
 
-        return new InMemoryRegisteredClientRepository(oidcClient);
+        return new InMemoryRegisteredClientRepository(reactClient);
     }
+
 
     @Bean
     public JWKSource<SecurityContext> jwkSource() {
@@ -128,8 +188,7 @@ public class SecurityConfig {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             keyPairGenerator.initialize(2048);
             keyPair = keyPairGenerator.generateKeyPair();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             throw new IllegalStateException(ex);
         }
         return keyPair;
@@ -142,7 +201,11 @@ public class SecurityConfig {
 
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
-        return AuthorizationServerSettings.builder().build();
+        return AuthorizationServerSettings.builder()
+            .tokenEndpoint("/oauth/token")
+            .authorizationEndpoint("/oauth/authorization")
+            .jwkSetEndpoint("/oauth2/keys")
+            .build();
     }
 
 }

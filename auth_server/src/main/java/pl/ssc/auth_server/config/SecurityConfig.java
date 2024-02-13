@@ -115,7 +115,8 @@ public class SecurityConfig {
             )
             // Form login handles the redirect to the login page from the
             // authorization server filter chain
-            .formLogin(Customizer.withDefaults());
+//            .formLogin(Customizer.withDefaults())
+            .csrf(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
@@ -158,8 +159,8 @@ public class SecurityConfig {
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
             .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
             .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-            .redirectUri("http://127.0.0.1:8080/login/oauth2/code/react-client")
-            .postLogoutRedirectUri("http://127.0.0.1:8080/main")
+            .redirectUri("http://127.0.0.1:3000/oauth/callback")
+            .postLogoutRedirectUri("http://127.0.0.1:3000/main")
             .scope("read")
             .scope("write")
             .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())

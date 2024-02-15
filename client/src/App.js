@@ -20,8 +20,6 @@ const App = () => {
   }, [authenticated]);
 
   const handleLoginSuccess = () => {
-    // This function is called after a successful login
-    // Update the authentication state
     setAuthenticated(true);
   };
 
@@ -41,23 +39,6 @@ const App = () => {
         <Route path='/callback' element={<Callback onLoginSuccess={handleLoginSuccess}/>}/>
         </Routes>
     </Router>
-
-    // <div>
-    //   {authenticated ? <Main/> : <LoginPopup/>}
-    // </div>
-    
-    // <Router>
-    //   <Routes>
-    //     <Route
-    //       path="/main"
-    //       render={() => (authenticated ? <Main /> : <LoginPopup />)}
-    //     />
-    //     {/* <Route path="/callback" component={Callback} /> */}
-    //     {/* Add other routes for additional pages as needed */}
-    //     <Route from="/" to="/main" />
-    //     <Route from="" to="/main" />
-    //   </Routes>
-    // </Router>
   );
 };
 

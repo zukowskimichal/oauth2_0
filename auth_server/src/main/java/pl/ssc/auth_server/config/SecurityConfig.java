@@ -4,6 +4,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.List;
 import java.util.UUID;
 
 import com.nimbusds.jose.jwk.JWKSet;
@@ -35,6 +36,9 @@ import org.springframework.security.oauth2.server.authorization.settings.ClientS
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -59,7 +63,8 @@ public class SecurityConfig {
             // Accept access tokens for User Info and/or Client Registration
             .oauth2ResourceServer((resourceServer) -> resourceServer
                 .jwt(Customizer.withDefaults()))
-            .csrf(AbstractHttpConfigurer::disable);
+            .csrf(AbstractHttpConfigurer::disable)
+            .cors(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
@@ -75,6 +80,7 @@ public class SecurityConfig {
             // Form login handles the redirect to the login page from the
             // authorization server filter chain
             .formLogin(Customizer.withDefaults())
+            .cors(AbstractHttpConfigurer::disable)
             .csrf(AbstractHttpConfigurer::disable);
         ;
 
@@ -90,8 +96,8 @@ public class SecurityConfig {
             .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
             .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-            .redirectUri("http://127.0.0.1:8080/login/oauth2/code/oidc-client")
-            .postLogoutRedirectUri("http://127.0.0.1:8080/")
+            .redirectUri("http://localhost:3000/callback")
+            .postLogoutRedirectUri("http://localhost:3000/")
             .scope(OidcScopes.OPENID)
             .scope(OidcScopes.PROFILE)
             .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())

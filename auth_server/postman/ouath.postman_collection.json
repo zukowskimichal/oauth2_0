@@ -1,0 +1,131 @@
+{
+	"info": {
+		"_postman_id": "78a072c5-87b7-45f2-8fab-0cbc6399bfb7",
+		"name": "ouath",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "getToken",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "JSESSIONID=2E4CFCF6A95F3B8E57ECAAEE0AAFDA02",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "authorization_code",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "oidc-client",
+							"type": "text"
+						},
+						{
+							"key": "secret",
+							"value": "secret",
+							"type": "text"
+						},
+						{
+							"key": "code",
+							"value": "Hmw6cD_lgdo9ysEXPcubKf54kmDKbLhGF6xXHy1QsNM5tdC89_LTZ8UYgLu0H5v-jcU_XGIy-Fu3uNXpmEX7RuaoETbhjIU0QmLmd0ftK4anrKV1NvCnrWRP6mHSVYgP",
+							"type": "text"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "http://127.0.0.1:8080/login/oauth2/code/oidc-client",
+							"type": "text"
+						},
+						{
+							"key": "code_verifier",
+							"value": "asdf",
+							"type": "text"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9000/oauth2/token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"oauth2",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "authorization",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "JSESSIONID=2E4CFCF6A95F3B8E57ECAAEE0AAFDA02",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:9000/oauth2/authorize?client_id=oidc-client&response_type=code&redirect_uri=http://127.0.0.1:8080/login/oauth2/code/oidc-client&scope=openid&state=asd&code_challenge=QmocKMYbe6JY-jzDALp806vBHA1LWF085KFdbyLW02M&code_challenge_method=S256",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"oauth2",
+						"authorize"
+					],
+					"query": [
+						{
+							"key": "client_id",
+							"value": "oidc-client"
+						},
+						{
+							"key": "response_type",
+							"value": "code"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "http://127.0.0.1:8080/login/oauth2/code/oidc-client"
+						},
+						{
+							"key": "scope",
+							"value": "openid"
+						},
+						{
+							"key": "state",
+							"value": "asd"
+						},
+						{
+							"key": "code_challenge",
+							"value": "QmocKMYbe6JY-jzDALp806vBHA1LWF085KFdbyLW02M"
+						},
+						{
+							"key": "code_challenge_method",
+							"value": "S256"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

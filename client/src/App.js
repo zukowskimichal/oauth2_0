@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Main from './Main';
 import LoginPopup from './LoginPopup';
 import axios from 'axios';
+import Callback from './Callback';
 
 
 
@@ -34,9 +35,12 @@ const App = () => {
         />
         <Route
           path="/login"
-          element={<LoginPopup  />}
+          element={<LoginPopup onLoginSuccess={handleLoginSuccess} />}
         />
         <Route path='/callback' element={<Callback onLoginSuccess={handleLoginSuccess}/>}/>
+        <Route path='/callback**' element={<Callback onLoginSuccess={handleLoginSuccess}/>}/>
+        <Route path='/callback/*' element={<Callback onLoginSuccess={handleLoginSuccess}/>}/>
+        
         </Routes>
     </Router>
   );

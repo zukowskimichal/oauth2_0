@@ -31,16 +31,13 @@ const App = () => {
         {/* Route to Main if authenticated, otherwise route to Login */}
         <Route
           path="/"
-          element={authenticated ? <Main /> : <Navigate to="/login"  />}
+          element={authenticated ? <Main /> : <LoginPopup />}
         />
         <Route
           path="/login"
-          element={<LoginPopup onLoginSuccess={handleLoginSuccess} />}
+          element={<LoginPopup />}
         />
         <Route path='/callback' element={<Callback onLoginSuccess={handleLoginSuccess}/>}/>
-        <Route path='/callback**' element={<Callback onLoginSuccess={handleLoginSuccess}/>}/>
-        <Route path='/callback/*' element={<Callback onLoginSuccess={handleLoginSuccess}/>}/>
-        
         </Routes>
     </Router>
   );

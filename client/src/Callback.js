@@ -3,16 +3,16 @@ import React, {useState, useEffect} from 'react'
 import queryString from 'query-string';
 import {getToken} from './AuthMethod';
 
-const finalise = (navigate) => {
-  navigate('/');
-}
+const {code} = queryString.parse(window.location.search);
 
 const Callback = ({location}) => {
-  const {code} = queryString.parse(location.search);
   const [callbackData,setCallbackData] = useState("none");
   // const {state} = queryString.parse(window.location.search);
   // console.log('parameters ' + state)
   // const tokenResponse = getToken(code);
+  // const resp = getToken(code).then(res => res.json());
+
+
   useEffect(()=> {
     getToken(code)
     .then(res => res.json())
@@ -21,7 +21,6 @@ const Callback = ({location}) => {
 
   },[code])
   const navigate = useNavigate();
-  console.log("rendered ")
 
   // console.log('token response '+ tokenResponse);
   // Do something with the parameter, like making subsequent calls

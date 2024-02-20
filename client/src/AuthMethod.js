@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const login = async () => {
+async function login(){
     
   const response = fetch('http://localhost:3000/oauth2/authorize?'
   +'client_id=oidc-client'
@@ -11,12 +11,13 @@ const login = async () => {
   +'&code_challenge=QmocKMYbe6JY-jzDALp806vBHA1LWF085KFdbyLW02M'
   +'&code_challenge_method=S256',
   {redirect: "manual",
-maxRedirects: 1});
+maxRedirects: 1})
+.then(res => res.url);
   
-  window.location.replace((await response).url);
+  window.location.replace( await response);
 };
 
-const getToken = (code) => {
+const getToken = async (code) => {
   console.log('code: '+ code);
 
 const formData = new URLSearchParams();
@@ -32,7 +33,6 @@ formData.append('code_verifier', 'foobar123');
     body: formData,
     method: 'POST'});
 
-  // return JSON.stringify(response);
 }
 
 export {login,getToken};

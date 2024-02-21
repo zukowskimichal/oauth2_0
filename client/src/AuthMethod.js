@@ -6,7 +6,7 @@ async function login(){
   +'client_id=oidc-client'
   +'&response_type=code'
   +'&redirect_uri=http://localhost:3000/callback'
-  +'&scope=openid'
+  +'&scope=USER'
   +'&state=asd'
   +'&code_challenge=QmocKMYbe6JY-jzDALp806vBHA1LWF085KFdbyLW02M'
   +'&code_challenge_method=S256',

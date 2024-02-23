@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-//@RequestMapping(value = "/")
+@RequestMapping(value = "/")
 public class ResourceController {
 
     @GetMapping("/public")
@@ -15,13 +15,11 @@ public class ResourceController {
     }
 
     @GetMapping("/user")
-    @PreAuthorize("hasRole('USER')")
     public String userEndpoint() {
         return "User endpoint";
     }
 
     @GetMapping("/admin")
-    @PreAuthorize("hasRole('ADMIN')")
     public String adminEndpoint() {
         return "Admin endpoint";
     }

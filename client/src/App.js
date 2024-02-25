@@ -8,6 +8,7 @@ import Main from './Main';
 import LoginPopup from './LoginPopup';
 import axios from 'axios';
 import Callback from './Callback';
+import { GlobalProvider } from './GlobalProvider';
 
 
 
@@ -23,6 +24,8 @@ const App = () => {
 
 
   return (
+    <GlobalProvider>
+
     <Router>
       <Routes>
         {/* Route to Main if authenticated, otherwise route to Login */}
@@ -30,10 +33,11 @@ const App = () => {
         <Route
           path="/"
           element={authenticated? <Main />: <LoginPopup/>}
-        />
+          />
         <Route  path="/login" element={ <LoginPopup />}/>
         </Routes>
     </Router>
+          </GlobalProvider>
   );
 };
 

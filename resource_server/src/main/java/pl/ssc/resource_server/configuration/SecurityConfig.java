@@ -21,9 +21,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.GET, "/user")
-                .hasRole("USER")
+                .hasRole("ROLE_USER")
                 .requestMatchers(HttpMethod.GET, "/admin")
-                .hasRole("ADMIN")
+                .hasRole("ROLE_ADMIN")
                 .anyRequest()
                 .authenticated())
             .oauth2ResourceServer(jwt -> jwt.jwt(customizer -> customizer.jwkSetUri("http://localhost:9000/jwks")));
@@ -33,6 +33,7 @@ public class SecurityConfig {
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
         grantedAuthoritiesConverter.setAuthoritiesClaimName("roles");
 
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();

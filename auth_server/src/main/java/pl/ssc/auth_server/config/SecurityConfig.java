@@ -4,6 +4,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,6 +27,7 @@ import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.authorization.InMemoryOAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
@@ -33,6 +35,8 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
+import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
@@ -50,7 +54,7 @@ public class SecurityConfig {
         throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-            .oidc(Customizer.withDefaults());	// Enable OpenID Connect 1.0
+            .oidc(Customizer.withDefaults());    // Enable OpenID Connect 1.0
         http
             // Redirect to the login page when not authenticated from the
             // authorization endpoint
@@ -98,12 +102,28 @@ public class SecurityConfig {
             .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
             .redirectUri("http://localhost:3000/callback")
             .postLogoutRedirectUri("http://localhost:3000/")
+            .scope("USER")
             .scope(OidcScopes.OPENID)
             .scope(OidcScopes.PROFILE)
             .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
             .build();
 
         return new InMemoryRegisteredClientRepository(oidcClient);
+    }
+
+    @Bean
+    public OAuth2TokenCustomizer<JwtEncodingContext> jwtTokenCustomizer() {
+        return (context) -> {
+            List<String> roles = new ArrayList<>();
+            if (OAuth2TokenType.ACCESS_TOKEN.equals(context.getTokenType())) {
+                context.getPrincipal().getAuthorities().forEach(authority -> {
+                    roles.add(authority.getAuthority());
+                });
+            }
+            context.getClaims().claims((claims) -> {
+                claims.put("roles", roles);
+            });
+        };
     }
 
     @Bean
@@ -125,8 +145,7 @@ public class SecurityConfig {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             keyPairGenerator.initialize(2048);
             keyPair = keyPairGenerator.generateKeyPair();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             throw new IllegalStateException(ex);
         }
         return keyPair;
@@ -139,7 +158,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
-        return AuthorizationServerSettings.builder().build();
+        return AuthorizationServerSettings.builder().oidcUserInfoEndpoint("/oidc").jwkSetEndpoint("/jwks").build();
     }
 
 }

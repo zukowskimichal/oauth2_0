@@ -1,42 +1,33 @@
-import logo from './logo.svg';
 import './App.css';
-import { SHA256 } from 'crypto-js';
-import { CryptoJS } from 'crypto-js';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Main from './Main';
 import LoginPopup from './LoginPopup';
-import axios from 'axios';
+import Callback from './Callback';
+
 
 
 
 const App = () => {
   const [authenticated, setAuthenticated] = useState(false);
 
-  useEffect(() => {
-    
-    console.log('is auth '+ authenticated)
-   
-  }, [authenticated]);
 
-  const handleLoginSuccess = () => {
-    setAuthenticated(true);
-  };
+  const authSuccess = useCallback(() => {
+    setAuthenticated(true)
+  });
+
 
 
   return (
     <Router>
       <Routes>
         {/* Route to Main if authenticated, otherwise route to Login */}
+        <Route path='/callback' element={<Callback location={window.location}/>}/>
         <Route
           path="/"
-          element={authenticated ? <Main /> : <Navigate to="/login"  />}
-        />
-        <Route
-          path="/login"
-          element={<LoginPopup  />}
-        />
-        <Route path='/callback' element={<Callback onLoginSuccess={handleLoginSuccess}/>}/>
+          element={authenticated? <Main />: <LoginPopup/>}
+          />
+        <Route  path="/login" element={ <LoginPopup />}/>
         </Routes>
     </Router>
   );

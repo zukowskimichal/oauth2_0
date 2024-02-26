@@ -1,14 +1,9 @@
-import logo from './logo.svg';
 import './App.css';
-import { SHA256 } from 'crypto-js';
-import { CryptoJS } from 'crypto-js';
 import React, { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Main from './Main';
 import LoginPopup from './LoginPopup';
-import axios from 'axios';
 import Callback from './Callback';
-import { GlobalProvider } from './GlobalProvider';
 
 
 
@@ -24,8 +19,6 @@ const App = () => {
 
 
   return (
-    <GlobalProvider>
-
     <Router>
       <Routes>
         {/* Route to Main if authenticated, otherwise route to Login */}
@@ -37,7 +30,6 @@ const App = () => {
         <Route  path="/login" element={ <LoginPopup />}/>
         </Routes>
     </Router>
-          </GlobalProvider>
   );
 };
 

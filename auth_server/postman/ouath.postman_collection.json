@@ -6,126 +6,244 @@
 	},
 	"item": [
 		{
-			"name": "getToken",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Cookie",
-						"value": "JSESSIONID=2E4CFCF6A95F3B8E57ECAAEE0AAFDA02",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "grant_type",
-							"value": "authorization_code",
-							"type": "text"
-						},
-						{
-							"key": "client_id",
-							"value": "oidc-client",
-							"type": "text"
-						},
-						{
-							"key": "secret",
-							"value": "secret",
-							"type": "text"
-						},
-						{
-							"key": "code",
-							"value": "Hmw6cD_lgdo9ysEXPcubKf54kmDKbLhGF6xXHy1QsNM5tdC89_LTZ8UYgLu0H5v-jcU_XGIy-Fu3uNXpmEX7RuaoETbhjIU0QmLmd0ftK4anrKV1NvCnrWRP6mHSVYgP",
-							"type": "text"
-						},
-						{
-							"key": "redirect_uri",
-							"value": "http://127.0.0.1:8080/login/oauth2/code/oidc-client",
-							"type": "text"
-						},
-						{
-							"key": "code_verifier",
-							"value": "asdf",
-							"type": "text"
+			"name": "resource server",
+			"item": [
+				{
+					"name": "getUserEndpoint",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJraWQiOiJhZTQzOGY3Yy00NjIxLTQ3NmYtYjkwYS0zYzE3MWEyNmEzN2YiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiYXVkIjoib2lkYy1jbGllbnQiLCJuYmYiOjE3MDg1MTM2NDYsInNjb3BlIjpbIlVTRVIiXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDozMDAwIiwiZXhwIjoxNzA4NTEzOTQ2LCJpYXQiOjE3MDg1MTM2NDYsImp0aSI6Ijk3NDkxZDg5LTliMzAtNGZhMi04NmFkLTkyMTgwZmM2ZDk1NyJ9.IBM2z9QQWGlKR2Wph7EVs57rPg8mrd6irh3NWIVO1lG8C4uLxjvd1bf2OnjbfkcImfcKhbyy9RSsZoGkWCfzOYtsZyrYm-MmY9-24IaJ27dksYldLoofOQzeCvGSabjv2m9bXyjGkemMxBoP-DcdgBMek_Y4_jE1yH1LO7yWii_n8HyUrF4-m1bjtVyiBNxBB9zJPazYJ7GKeetPHm7YjBO2XvhjPh57QZRL_u8dI1bmLoxEFyDI4Odzvz9m_4EBtFQ1gpE6SaiLB1N2vLC8_ZiLAi03ga3kj9wYnr9cg4fwtPtSCNQQotXd0YkBUA5FmKbnnxek-Qb8Y09kUkqtmg",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:9001/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"user"
+							]
 						}
-					],
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://localhost:9000/oauth2/token",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "9000",
-					"path": [
-						"oauth2",
-						"token"
-					]
+				{
+					"name": "getAdminEndpoint",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer eyJraWQiOiJhZTQzOGY3Yy00NjIxLTQ3NmYtYjkwYS0zYzE3MWEyNmEzN2YiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiYXVkIjoib2lkYy1jbGllbnQiLCJuYmYiOjE3MDg1MTM2NDYsInNjb3BlIjpbIlVTRVIiXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDozMDAwIiwiZXhwIjoxNzA4NTEzOTQ2LCJpYXQiOjE3MDg1MTM2NDYsImp0aSI6Ijk3NDkxZDg5LTliMzAtNGZhMi04NmFkLTkyMTgwZmM2ZDk1NyJ9.IBM2z9QQWGlKR2Wph7EVs57rPg8mrd6irh3NWIVO1lG8C4uLxjvd1bf2OnjbfkcImfcKhbyy9RSsZoGkWCfzOYtsZyrYm-MmY9-24IaJ27dksYldLoofOQzeCvGSabjv2m9bXyjGkemMxBoP-DcdgBMek_Y4_jE1yH1LO7yWii_n8HyUrF4-m1bjtVyiBNxBB9zJPazYJ7GKeetPHm7YjBO2XvhjPh57QZRL_u8dI1bmLoxEFyDI4Odzvz9m_4EBtFQ1gpE6SaiLB1N2vLC8_ZiLAi03ga3kj9wYnr9cg4fwtPtSCNQQotXd0YkBUA5FmKbnnxek-Qb8Y09kUkqtmg"
+							},
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:9001/admin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"admin"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "authorization",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Cookie",
-						"value": "JSESSIONID=2E4CFCF6A95F3B8E57ECAAEE0AAFDA02",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://localhost:9000/oauth2/authorize?client_id=oidc-client&response_type=code&redirect_uri=http://127.0.0.1:8080/login/oauth2/code/oidc-client&scope=openid&state=asd&code_challenge=QmocKMYbe6JY-jzDALp806vBHA1LWF085KFdbyLW02M&code_challenge_method=S256",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "9000",
-					"path": [
-						"oauth2",
-						"authorize"
-					],
-					"query": [
-						{
-							"key": "client_id",
-							"value": "oidc-client"
+			"name": "authorization server",
+			"item": [
+				{
+					"name": "getToken",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "JSESSIONID=CBD11C075EE49A29C27F3B1F7515FB58",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "authorization_code",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "oidc-client",
+									"type": "text"
+								},
+								{
+									"key": "secret",
+									"value": "secret",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "code",
+									"value": "134d5AocX-0OS1JhiB9dZwulQE3AAG4O1WrhkCxohAnIxhrXZik1WH_OC2BR_Dly9Vqf-IGlzFRwutjGvZHIf8Vba1bLQaHXmaK-HkQ44VWmSEL7qXTWxD2civxryhCY",
+									"type": "text"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://localhost:3000/callback",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "code_challenge_method",
+									"value": "S256",
+									"type": "text"
+								},
+								{
+									"key": "code_challenge",
+									"value": "asdf",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "code_verifier",
+									"value": "foobar123",
+									"type": "text"
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
-						{
-							"key": "response_type",
-							"value": "code"
-						},
-						{
-							"key": "redirect_uri",
-							"value": "http://127.0.0.1:8080/login/oauth2/code/oidc-client"
-						},
-						{
-							"key": "scope",
-							"value": "openid"
-						},
-						{
-							"key": "state",
-							"value": "asd"
-						},
-						{
-							"key": "code_challenge",
-							"value": "QmocKMYbe6JY-jzDALp806vBHA1LWF085KFdbyLW02M"
-						},
-						{
-							"key": "code_challenge_method",
-							"value": "S256"
+						"url": {
+							"raw": "http://localhost:9000/oauth2/token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"oauth2",
+								"token"
+							]
 						}
-					]
+					},
+					"response": []
+				},
+				{
+					"name": "authorization",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "JSESSIONID=7D3E915A19B1085F1CE749A5C0611673",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:9000/oauth2/authorize?client_id=oidc-client&response_type=code&redirect_uri=http://localhost:3000/callback&scope=USER&state=asd&code_challenge=QmocKMYbe6JY-jzDALp806vBHA1LWF085KFdbyLW02M&code_challenge_method=S256",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"oauth2",
+								"authorize"
+							],
+							"query": [
+								{
+									"key": "client_id",
+									"value": "oidc-client"
+								},
+								{
+									"key": "response_type",
+									"value": "code"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://localhost:3000/callback"
+								},
+								{
+									"key": "scope",
+									"value": "USER"
+								},
+								{
+									"key": "state",
+									"value": "asd"
+								},
+								{
+									"key": "code_challenge",
+									"value": "QmocKMYbe6JY-jzDALp806vBHA1LWF085KFdbyLW02M"
+								},
+								{
+									"key": "code_challenge_method",
+									"value": "S256"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "jwks",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "JSESSIONID=CBD11C075EE49A29C27F3B1F7515FB58",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:9000/jwks",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"jwks"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		}
 	]
 }
